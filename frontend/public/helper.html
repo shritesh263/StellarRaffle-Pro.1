@@ -1,0 +1,10 @@
+<script>
+    fetch('/wasm_hex.txt')
+        .then(response => response.text())
+        .then(text => {
+            document.body.innerHTML = `
+                <textarea id="hexData">${text}</textarea>
+                <button id="copyBtn" onclick="document.getElementById('hexData').select(); document.execCommand('copy'); alert('Copied');">Copy to Clipboard</button>
+            `;
+        });
+</script>

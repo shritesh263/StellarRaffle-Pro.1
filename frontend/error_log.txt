@@ -1,0 +1,4 @@
+Error: Upload failed: {"status":"PENDING","hash":"2c3c781ec414d4d688ae4c4ff45aa139088e1598c1bfb2a03b1badfbb4e6f6ea","latestLedger":1879024,"latestLedgerCloseTime":"1775398218"}
+    at deploy (file:///C:/Users/Shritesh/OneDrive/Desktop/Level-5/frontend/deploy_raffle.js:39:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+{}

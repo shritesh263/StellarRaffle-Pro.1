@@ -44,6 +44,30 @@ StellarRaffle Pro is a fully on-chain lottery built on **Stellar's Soroban** sma
 │  │   XLM Token Contract (Native SAC)        │   │
 │  └──────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────┘
+
+### System Components Sequence (Mermaid)
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend (React)
+    participant W as Freighter Wallet
+    participant S as Stellar Testnet (Soroban)
+    participant C as Raffle Contract
+
+    U->>F: Select Ticket Tier (Diamond/Gold/Bronze)
+    F->>F: Build Transaction (buy_ticket)
+    F->>W: Request Signature (XDR)
+    W->>U: Show Approval Dialog
+    U->>W: Approve & Sign
+    W-->>F: Signed XDR
+    F->>S: Broadcast Transaction
+    S->>C: Execute buy_ticket()
+    C->>S: Transfer XLM (native)
+    C->>C: Update Ledger State (Participants/Vault)
+    S-->>F: Success (TX Hash)
+    F->>U: Display Confirmation & TX Link
+```
 ```
 
 ---

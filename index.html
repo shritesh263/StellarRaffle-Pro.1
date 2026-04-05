@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StellarRaffle | The Celestial Ledger</title>
+  
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: '#0b0e14',
+            surface: '#0b0e14',
+            'surface-container-low': '#10131a',
+            'surface-container': '#161a21',
+            'surface-container-high': '#1c2028',
+            'surface-container-highest': '#22262f',
+            'surface-variant': '#22262f',
+            primary: '#8ff5ff',
+            'primary-dim': '#00deec',
+            'primary-container': '#00eefc',
+            'on-primary': '#005d63',
+            secondary: '#ac89ff',
+            'secondary-container': '#7000ff',
+            'on-secondary': '#290067',
+            'secondary-fixed': '#dac9ff',
+            tertiary: '#ffe792',
+            'tertiary-container': '#ffd709',
+            'on-tertiary-container': '#5b4b00',
+            'on-surface': '#ecedf6',
+            'on-surface-variant': '#a9abb3',
+            'outline-variant': '#45484f',
+            error: '#ff6e84',
+          },
+          fontFamily: {
+            headline: ['Space Grotesk', 'sans-serif'],
+            body: ['Manrope', 'sans-serif'],
+            label: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            'full': '9999px',
+            'xl': '0.75rem',
+            'lg': '0.5rem',
+          },
+        }
+      }
+    }
+  </script>
+
+  <style type="text/css">
+    ::selection {
+      background-color: #00eefc;
+      color: #005d63;
+    }
+    
+    .glass-card {
+      background: rgba(34, 38, 47, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .stellar-pulse {
+      position: absolute;
+      background: #7000ff;
+      filter: blur(60px);
+      opacity: 0.15;
+      z-index: -1;
+    }
+
+    body {
+      background-color: #0b0e14;
+      color: #ecedf6;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #10131a; }
+    ::-webkit-scrollbar-thumb { background: #22262f; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #45484f; }
+  </style>
+
+  <!-- React & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-background text-on-surface font-body p-0 m-0 overflow-x-hidden">
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [view, setView] = useState('home'); // home, details, tickets, history
+      const [notifications, setNotifications] = useState([]);
+      const [pubKey, setPubKey] = useState(null);
+      const [selectedRaffle, setSelectedRaffle] = useState(null);
+
+      // Mock Data 
+      const raffles = [
+        { id: 1, title: 'Nebula Jackpot', pool: 1250, participants: 256, deadline: '04:12', status: 'Live' },
+        { id: 2, title: 'Supernova Draw', pool: 8400, participants: 1102, deadline: '12:45', status: 'Live' },
+        { id: 3, title: 'Pulsar Weekly', pool: 22000, participants: 450, deadline: '2d 04h', status: 'Live' }
+      ];
+
+      const userTickets = [
+        { id: 1, raffle: 'Nebula Jackpot', count: 5, date: '2026-04-04' },
+        { id: 2, raffle: 'Supernova Draw', count: 12, date: '2026-04-03' }
+      ];
+
+      const userWins = [
+        { id: 1, raffle: 'Galactic Mini', amount: 120, date: '2026-03-28' }
+      ];
+
+      const winnerHistory = [
+        { date: '2026-04-03', winner: 'GABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', amount: 1250 },
+        { date: '2026-04-02', winner: 'GQRSTUV1234567890ABCDEFGH', amount: 8400 },
+        { date: '2026-04-01', winner: 'GXYZ...A1B2', amount: 500 }
+      ];
+
+      const addNotification = (message) => {
+        const id = Date.now();
+        setNotifications(prev => [...prev, { id, message }]);
+        setTimeout(() => {
+          setNotifications(prev => prev.filter(n => n.id !== id));
+        }, 3000);
+      };
+
+      const connectWallet = () => {
+        setPubKey('GDS5Y...XJ3V');
+        addNotification('Wallet Successfully Connected');
+      };
+
+      // Navigation Helper
+      const navigateTo = (viewName, data = null) => {
+        setView(viewName);
+        if (data) setSelectedRaffle(data);
+        window.scrollTo(0, 0);
+      };
+
+      // Header Component
+      const Header = () => (
+        <nav className="fixed top-0 w-full z-50 bg-gradient-to-b from-surface-container-low to-transparent px-6 py-4 flex justify-between items-center h-20 backdrop-blur-sm">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigateTo('home')}>
+            <span className="material-symbols-outlined text-primary text-3xl">rocket_launch</span>
+            <span className="font-headline font-bold text-2xl tracking-tight">StellarRaffle</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              className="font-label text-on-surface-variant hover:text-primary transition-colors py-2 px-4"
+              onClick={() => navigateTo('history')}
+            >
+              History
+            </button>
+            <button 
+              className="font-label text-on-surface-variant hover:text-primary transition-colors py-2 px-4"
+              onClick={() => navigateTo('tickets')}
+            >
+              My Tickets
+            </button>
+            {pubKey ? (
+              <div className="font-label font-bold text-primary bg-primary/10 py-2 px-6 rounded-full border border-primary/20">
+                {pubKey}
+              </div>
+            ) : (
+              <button 
+                onClick={connectWallet}
+                className="bg-gradient-to-br from-primary to-primary-dim text-on-primary rounded-full font-label font-bold py-2 px-8 shadow-[0_0_12px_rgba(143,245,255,0.3)] hover:opacity-80 active:scale-95 transition-all"
+              >
+                Connect Wallet
+              </button>
+            )}
+          </div>
+        </nav>
+      );
+
+      // Notification Toast Component
+      const NotificationsOverlay = () => (
+        <div className="fixed top-24 right-6 z-[100] flex flex-col gap-3">
+          {notifications.map(n => (
+            <div key={n.id} className="glass-card rounded-xl border border-primary/20 p-4 shadow-xl animate-in fade-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-3">
+                 <span className="material-symbols-outlined text-primary">check_circle</span>
+                 <p className="font-label font-bold text-on-surface">{n.message}</p>
+               </div>
+            </div>
+          ))}
+        </div>
+      );
+
+      return (
+        <div className="min-h-screen">
+          <Header />
+          <NotificationsOverlay />
+
+          <main className="pt-28 pb-12 px-6 container mx-auto">
+            {view === 'home' && (
+              <div className="flex flex-col gap-12">
+                {/* Hero Section */}
+                <div className="glass-card rounded-3xl p-12 relative overflow-hidden flex flex-col items-center text-center gap-6">
+                  <div className="stellar-pulse -top-20 -left-20 w-80 h-80"></div>
+                  <span className="badge bg-tertiary-container text-on-tertiary-container px-4 py-1 rounded-full font-label font-bold text-sm">LIVE SYSTEMS ACTIVE</span>
+                  <h1 className="font-headline font-bold text-6xl text-white">The Future of <br/>On-Chain Luck</h1>
+                  <p className="font-body text-on-surface-variant text-xl max-w-xl">Fully decentralized lottery on the Stellar network. No admins. No tricks. Just raw verifiable probability.</p>
+                  <button 
+                    onClick={connectWallet}
+                    className="bg-gradient-to-br from-primary to-primary-dim text-on-primary rounded-full font-label font-bold py-4 px-12 shadow-[0_0_20px_rgba(143,245,255,0.3)] hover:opacity-90 active:scale-95 transition-all text-lg mt-4"
+                  >
+                    Launch Your First Entry
+                  </button>
+                </div>
+
+                {/* Active Raffles Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {raffles.map(r => (
+                    <div key={r.id} className="glass-card rounded-3xl p-6 group cursor-pointer hover:border-primary/20 border border-transparent transition-all" onClick={() => navigateTo('details', r)}>
+                       <div className="flex justify-between items-start mb-6">
+                         <span className="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label font-bold text-xs">LIVE</span>
+                         <div className="flex flex-col items-end">
+                            <span className="font-label text-xs text-on-surface-variant">DRAWENDS IN</span>
+                            <span className="font-headline font-bold text-lg text-primary">{r.deadline}</span>
+                         </div>
+                       </div>
+                       
+                       <div className="space-y-6">
+                         <h3 className="font-headline font-bold text-2xl text-white">{r.title}</h3>
+                         <div className="flex flex-col">
+                            <span className="font-label text-sm text-on-surface-variant">PRIZE POOL</span>
+                            <span className="font-headline font-bold text-4xl text-white">{r.pool} XLM</span>
+                         </div>
+                         <div className="flex justify-between items-center py-4 bg-surface-container-low rounded-2xl px-4">
+                            <div className="flex flex-col">
+                              <span className="font-label text-xs text-on-surface-variant">PARTICIPANTS</span>
+                              <span className="font-headline font-bold text-lg">{r.participants}</span>
+                            </div>
+                            <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward</span>
+                         </div>
+                       </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {view === 'details' && selectedRaffle && (
+              <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+                <button className="flex items-center gap-2 text-on-surface-variant hover:text-primary font-label font-bold mb-4" onClick={() => setView('home')}>
+                   <span className="material-symbols-outlined">arrow_back</span> BACK TO EXPLORE
+                </button>
+
+                <div className="glass-card rounded-3xl p-10 relative overflow-hidden">
+                  <div className="stellar-pulse -top-20 -right-20 w-96 h-96"></div>
+                  
+                  <div className="flex flex-col gap-12">
+                    <div className="space-y-4">
+                      <span className="bg-tertiary-container text-on-tertiary-container px-4 py-1 rounded-full font-label font-bold text-sm">CURRENT PRIZE POOL</span>
+                      <h1 className="font-headline font-bold text-8xl text-white tracking-tighter">{selectedRaffle.pool} XLM</h1>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-8">
+                       <div className="p-4 bg-surface-container rounded-2xl">
+                          <p className="font-label text-xs text-on-surface-variant uppercase mb-1">Participants</p>
+                          <p className="font-headline font-bold text-2xl">{selectedRaffle.participants}</p>
+                       </div>
+                       <div className="p-4 bg-surface-container rounded-2xl">
+                          <p className="font-label text-xs text-on-surface-variant uppercase mb-1">Time Left</p>
+                          <p className="font-headline font-bold text-2xl text-primary">{selectedRaffle.deadline}</p>
+                       </div>
+                       <div className="p-4 bg-surface-container rounded-2xl">
+                          <p className="font-label text-xs text-on-surface-variant uppercase mb-1">Ticket Cost</p>
+                          <p className="font-headline font-bold text-2xl">5 XLM</p>
+                       </div>
+                    </div>
+
+                    <div className="pt-8 space-y-6">
+                      <div className="flex flex-col gap-2">
+                         <label className="font-label font-bold text-on-surface mb-2">HOW MANY TICKETS?</label>
+                         <input 
+                           type="number" 
+                           defaultValue="1" 
+                           className="bg-surface-container-lowest border-outline-variant/15 rounded-xl p-4 text-xl font-headline font-bold focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                         />
+                      </div>
+                      <button 
+                        onClick={() => addNotification('Tickets Purchased Successfully')}
+                        className="bg-gradient-to-br from-primary to-primary-dim text-on-primary rounded-full font-label font-bold py-5 px-12 shadow-[0_0_24px_rgba(143,245,255,0.3)] hover:opacity-90 active:scale-95 transition-all text-xl w-full"
+                      >
+                        Buy Tickets Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass-card rounded-3xl p-8">
+                  <h3 className="font-headline font-bold text-2xl mb-8">Recent Participants</h3>
+                  <div className="space-y-4">
+                    {[1,2,3,4,5].map(i => (
+                      <div key={i} className="flex justify-between items-center p-4 bg-surface-container/50 rounded-2xl">
+                         <span className="font-label font-bold text-on-surface">GD7H...XJ3V</span>
+                         <span className="font-label text-on-surface-variant">5 Tickets bought • 2m ago</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {view === 'tickets' && (
+              <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-500">
+                <header className="flex flex-col gap-2">
+                  <h1 className="font-headline font-bold text-5xl">My Portfolio</h1>
+                  <p className="text-on-surface-variant text-lg">Manage your active entries and claim your rewards.</p>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                  {/* Active Tickets */}
+                  <div className="space-y-6">
+                    <h3 className="font-headline font-bold text-2xl flex items-center gap-2">
+                       <span className="material-symbols-outlined text-secondary">confirmation_number</span> ACTIVE ENTRIES
+                    </h3>
+                    <div className="space-y-4">
+                      {userTickets.map(t => (
+                        <div key={t.id} className="glass-card rounded-3xl p-6 border-l-4 border-secondary">
+                          <div className="flex justify-between items-center mb-4">
+                             <h4 className="font-headline font-bold text-xl">{t.raffle}</h4>
+                             <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-full font-label font-bold text-xs">ENTRY CONFIRMED</span>
+                          </div>
+                          <div className="flex justify-between text-on-surface-variant font-label text-sm">
+                             <span>Tickets: <span className="text-white font-bold">{t.count}</span></span>
+                             <span>Draw Date: <span className="text-white font-bold">{t.date}</span></span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Past Wins */}
+                  <div className="space-y-6">
+                    <h3 className="font-headline font-bold text-2xl flex items-center gap-2">
+                       <span className="material-symbols-outlined text-tertiary">military_tech</span> PAST REWARDS
+                    </h3>
+                    <div className="space-y-4">
+                      {userWins.map(w => (
+                        <div key={w.id} className="glass-card rounded-3xl p-6 bg-secondary-fixed/10 border-l-4 border-tertiary relative overflow-hidden">
+                          <div className="stellar-pulse top-0 right-0 w-40 h-40 opacity-10" style={{background:'#ffd709'}}></div>
+                          <div className="flex justify-between items-center mb-4">
+                             <h4 className="font-headline font-bold text-xl text-secondary-fixed">{w.raffle}</h4>
+                             <span className="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label font-bold text-xs uppercase">JACKPOT WON</span>
+                          </div>
+                          <div className="flex justify-between items-end">
+                             <div className="flex flex-col">
+                               <span className="font-label text-xs text-secondary-fixed/70 uppercase">AMOUNT WON</span>
+                               <span className="font-headline font-bold text-4xl text-secondary-fixed">{w.amount} XLM</span>
+                             </div>
+                             <span className="font-label text-sm text-secondary-fixed/50">{w.date}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {view === 'history' && (
+              <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-500">
+                <header className="flex flex-col gap-2">
+                  <h1 className="font-headline font-bold text-5xl">Global Ledger</h1>
+                  <p className="text-on-surface-variant text-lg">A permanent record of every success in the Stellar galaxy.</p>
+                </header>
+
+                <div className="glass-card rounded-3xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-surface-container-highest/50">
+                          <th className="p-6 font-headline font-bold text-on-surface-variant uppercase text-xs tracking-widest">Draw Date</th>
+                          <th className="p-6 font-headline font-bold text-on-surface-variant uppercase text-xs tracking-widest">Winner Address</th>
+                          <th className="p-6 font-headline font-bold text-on-surface-variant uppercase text-xs tracking-widest">Prize Amount</th>
+                          <th className="p-6 font-headline font-bold text-on-surface-variant uppercase text-xs tracking-widest">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-outline-variant/10">
+                        {winnerHistory.map((h, i) => (
+                           <tr key={i} className="hover:bg-surface-container-low transition-all">
+                             <td className="p-6 font-label text-sm">{h.date}</td>
+                             <td className="p-6 font-label font-bold text-primary">{h.winner.substring(0, 8)}...{h.winner.substring(h.winner.length - 8)}</td>
+                             <td className="p-6 font-headline font-bold text-2xl">{h.amount} XLM</td>
+                             <td className="p-6">
+                               <span className="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label font-bold text-xs uppercase">COMPLETED</span>
+                             </td>
+                           </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

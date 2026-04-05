@@ -13,8 +13,6 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
   }, []);
 
   const checkConnection = async () => {
-    // Basic heuristics to check Freighter 
-    // Usually it injects window.freighter
     if (!window.freighter) {
        setIsInstalled(false);
        return;
@@ -43,42 +41,58 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
       const info = await getUserInfo();
       if (info && info.publicKey) {
         setPubKey(info.publicKey);
-        setAlert({ type: 'success', message: 'Wallet connected!' });
+        setAlert({ type: 'success', message: 'Wallet Authorization Success!' });
       }
     } catch (e) {
-      setAlert({ type: 'error', message: 'Error connecting wallet.' });
+      setAlert({ type: 'error', message: 'Authorization Cancelled.' });
     }
   };
 
-  const disconnect = async () => {
+  const disconnect = () => {
     setPubKey('');
-    setAlert({ type: 'success', message: 'Wallet disconnected.' });
+    setAlert({ type: 'success', message: 'Wallet Session Ended.' });
   };
 
   if (!isInstalled) {
     return (
-      <div className="wallet-section stat-box">
-        <p className="stat-label" style={{marginBottom: '0.5rem'}}>Freighter is required</p>
-        <a href="https://freighter.app" target="_blank" rel="noreferrer" className="btn">
-          Install Freighter
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p className="subtitle" style={{marginBottom: '1.5rem'}}>Stellar Wallet Required</p>
+        <a href="https://freighter.app" target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: 'none' }}>
+          Get Freighter
         </a>
       </div>
     );
   }
 
   return (
-    <div className="wallet-section">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       {!pubKey ? (
-        <button onClick={connect} className="btn" style={{width: '100%'}}>
-          Connect Freighter
+        <button onClick={connect} className="btn-primary">
+          📲 Connect Wallet
         </button>
       ) : (
-        <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
-          <button onClick={disconnect} className="btn" style={{background: 'rgba(255,255,255,0.1)'}}>
-            Disconnect Wallet
-          </button>
-          <div className="wallet-address stat-label">
-            {pubKey.substring(0, 6)}...{pubKey.substring(pubKey.length - 6)}
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <span style={{ fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.8rem' }}>AUTHORIZED ACCOUNT</span>
+            <button 
+              onClick={disconnect} 
+              style={{ padding: '0.4rem 0.8rem', border: 'none', background: 'rgba(244, 63, 94, 0.1)', color: 'var(--accent)', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.7rem' }}
+            >
+              Sign Out
+            </button>
+          </div>
+          <div style={{ 
+            background: 'white', 
+            padding: '1rem', 
+            borderRadius: '12px', 
+            fontFamily: 'monospace', 
+            fontSize: '0.9rem', 
+            color: 'var(--primary)',
+            border: '1px solid var(--card-border)',
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
+            wordBreak: 'break-all'
+          }}>
+            {pubKey}
           </div>
         </div>
       )}
