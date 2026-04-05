@@ -1,16 +1,38 @@
-# React + Vite
+# Stellar Raffle Frontend Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project-specific Frontend Description
+This repository contains the frontend for the Stellar Raffle project, a platform that allows users to participate in raffles using cryptocurrency. The frontend is designed to provide an intuitive user experience while interacting with the backend services.
 
-Currently, two official plugins are available:
+## Wallet Integration Setup
+To enable wallet integration, follow these steps:
+1. Install the required wallet provider (e.g., MetaMask).
+2. Connect your wallet to the application using the connection button.
+3. Ensure that your wallet is configured to use the appropriate network.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Component Structure and Responsibilities
+The frontend application is structured into several key components:
+- **App**: The main application component that controls routing and global state.
+- **Header**: Displays the navigation and wallet connection status.
+- **RaffleList**: Fetches and displays the list of active raffles.
+- **RaffleDetails**: Shows the details of a selected raffle and allows entry.
 
-## React Compiler
+## Environment Variables Configuration
+Create a `.env` file in the root of the project and add the following variables:
+```
+REACT_APP_API_URL=<your_api_url>
+REACT_APP_NETWORK=<Ethereum or other network name>
+```
+Make sure to replace `<your_api_url>` with your actual API endpoint.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Build and Deployment Instructions for Vercel
+1. Push your code to GitHub.
+2. Sign in to Vercel and import your GitHub repository.
+3. Set up the environment variables in Vercel's project settings.
+4. Vercel will automatically deploy your application on every push to the main branch.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Development Workflow
+- Clone the repository: `git clone https://github.com/shritesh263/-StellarRaffle-Pro.git`
+- Install dependencies: `npm install`
+- Run the development server: `npm start`
+- Commit changes: `git commit -m "Your commit message"`
+- Push to GitHub: `git push origin main`
