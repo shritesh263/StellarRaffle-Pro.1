@@ -10,14 +10,29 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
   const [connecting, setConnecting] = useState(false);
 
   useEffect(() => {
+    // Check every 500ms for 3 seconds
+    let attempts = 0;
+    const interval = setInterval(() => {
+      if (window.freighter) {
+        checkConnection();
+        clearInterval(interval);
+      } else if (attempts > 6) {
+        setIsInstalled(false);
+        clearInterval(interval);
+      }
+      attempts++;
+    }, 500);
+
+    // Initial check
     checkConnection();
+    
+    return () => clearInterval(interval);
   }, []);
 
   const checkConnection = async () => {
-    if (!window.freighter) {
-       setIsInstalled(false);
-       return;
-    }
+    if (!window.freighter) return;
+    
+    setIsInstalled(true); 
     
     try {
       const allowed = await isAllowed();
@@ -31,6 +46,8 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
       console.error("Wallet check failed:", e);
     }
   };
+
+
 
   const connect = async () => {
     setConnecting(true);
@@ -74,10 +91,18 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
           target="_blank" 
           rel="noreferrer" 
           className="btn-primary" 
-          style={{ textDecoration: 'none', display: 'inline-block', fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}
+          style={{ textDecoration: 'none', display: 'inline-block', fontSize: '0.9rem', padding: '0.75rem 1.5rem', marginBottom: '1rem' }}
         >
           Download Freighter
         </a>
+        <div style={{ marginTop: '0.5rem' }}>
+          <button 
+            onClick={() => window.location.reload()} 
+            style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'underline' }}
+          >
+            I have it installed. Refresh App.
+          </button>
+        </div>
       </div>
     );
   }

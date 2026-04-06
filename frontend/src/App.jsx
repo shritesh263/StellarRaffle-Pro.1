@@ -79,7 +79,7 @@ function App() {
                     <p className="subtitle" style={{ fontSize: '0.95rem' }}>Select a ticket to enter the next draw</p>
                   </div>
                   <div className="glass-panel" style={{ padding: '0.5rem 1rem', borderRadius: '12px', background: 'var(--primary-light)', border: 'none' }}>
-                    <span style={{ color: var(--primary), fontWeight: 800, fontSize: '0.85rem' }}>TESTNET LIVE</span>
+                    <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.85rem' }}>TESTNET LIVE</span>
                   </div>
                 </div>
                 
@@ -95,7 +95,7 @@ function App() {
                 ) : (
                   <div style={{ marginTop: '3rem', textAlign: 'center', padding: '2rem', background: 'hsla(243, 75%, 59%, 0.03)', borderRadius: '20px', border: '1px dashed var(--primary)' }}>
                      <p className="subtitle" style={{marginBottom: '1rem'}}>Wallet Authorization Required</p>
-                     <p style={{ fontSize: '0.85rem', color: var(--text-muted) }}>Connect your Stellar wallet to participate in the raffle.</p>
+                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Connect your Stellar wallet to participate in the raffle.</p>
                   </div>
                 )}
               </div>
