@@ -6,13 +6,32 @@ import BuyTicket from './components/BuyTicket';
 import TierSelector from './components/TierSelector';
 import WinnerHistory from './components/WinnerHistory';
 
+import { useFreighter } from './hooks/useFreighter';
+import { useStellar } from './hooks/useStellar';
+
 function App() {
-  const [pubKey, setPubKey] = useState('');
+  const { 
+    publicKey: pubKey, 
+    isFreighterInstalled, 
+    isWalletConnected, 
+    connecting, 
+    error: walletError, 
+    connectWallet, 
+    disconnectWallet 
+  } = useFreighter();
+
+  const { balance, loading: balanceLoading, refreshBalance } = useStellar(pubKey);
   const [alert, setAlert] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('play'); // 'play', 'history', 'referral'
   const [selectedTier, setSelectedTier] = useState('Bronze');
   const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    if (walletError) {
+      setAlert({ type: 'error', message: walletError });
+    }
+  }, [walletError]);
 
   useEffect(() => {
     if (alert) {
@@ -23,7 +42,9 @@ function App() {
 
   const handleTransactionSuccess = () => {
     setRefreshTrigger(prev => prev + 1);
+    refreshBalance();
   };
+
 
   const copyReferralLink = () => {
     const link = `${window.location.origin}?ref=${pubKey}`;
@@ -177,10 +198,24 @@ function App() {
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           <div className="glass-panel stat-card">
              <div className="stat-label">🔐 SECURE ACCOUNT</div>
-             <Wallet pubKey={pubKey} setPubKey={setPubKey} setAlert={setAlert} />
+             <Wallet 
+               pubKey={pubKey} 
+               setAlert={setAlert} 
+               connectWallet={connectWallet}
+               disconnectWallet={disconnectWallet}
+               connecting={connecting}
+               isFreighterInstalled={isFreighterInstalled}
+             />
           </div>
           
-          <Balance pubKey={pubKey} refreshTrigger={refreshTrigger} setAlert={setAlert} />
+          <Balance 
+            pubKey={pubKey} 
+            refreshTrigger={refreshTrigger} 
+            setAlert={setAlert} 
+            newBalance={balance}
+            newLoading={balanceLoading}
+          />
+
           
           <RaffleInfo refreshTrigger={refreshTrigger} setHistory={setHistory} />
         </aside>

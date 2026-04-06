@@ -5,82 +5,10 @@ import {
   getUserInfo,
 } from '@stellar/freighter-api';
 
-const Wallet = ({ pubKey, setPubKey, setAlert }) => {
-  const [isInstalled, setIsInstalled] = useState(true);
-  const [connecting, setConnecting] = useState(false);
+const Wallet = ({ pubKey, setAlert, connectWallet, disconnectWallet, connecting, isFreighterInstalled }) => {
+  const formatAddress = (addr) => addr ? `${addr.slice(0, 8)}...${addr.slice(-8)}` : '';
 
-  useEffect(() => {
-    // Check every 500ms for 3 seconds
-    let attempts = 0;
-    const interval = setInterval(() => {
-      if (window.freighter) {
-        checkConnection();
-        clearInterval(interval);
-      } else if (attempts > 6) {
-        setIsInstalled(false);
-        clearInterval(interval);
-      }
-      attempts++;
-    }, 500);
-
-    // Initial check
-    checkConnection();
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  const checkConnection = async () => {
-    if (!window.freighter) return;
-    
-    setIsInstalled(true); 
-    
-    try {
-      const allowed = await isAllowed();
-      if (allowed) {
-        const info = await getUserInfo();
-        if (info.publicKey) {
-          setPubKey(info.publicKey);
-        }
-      }
-    } catch (e) {
-      console.error("Wallet check failed:", e);
-    }
-  };
-
-
-
-  const connect = async () => {
-    setConnecting(true);
-    try {
-      if (!window.freighter) {
-        setIsInstalled(false);
-        setConnecting(false);
-        return;
-      }
-      
-      const allowed = await setAllowed();
-      if (allowed) {
-        const info = await getUserInfo();
-        if (info && info.publicKey) {
-          setPubKey(info.publicKey);
-          setAlert({ type: 'success', message: 'Wallet Connected Successfully!' });
-        }
-      } else {
-        setAlert({ type: 'error', message: 'Access Denied. Please allow Freighter to connect.' });
-      }
-    } catch (e) {
-      setAlert({ type: 'error', message: 'Authorization Cancelled or Failed.' });
-    } finally {
-      setConnecting(false);
-    }
-  };
-
-  const disconnect = () => {
-    setPubKey('');
-    setAlert({ type: 'success', message: 'Signed out of session.' });
-  };
-
-  if (!isInstalled) {
+  if (!isFreighterInstalled) {
     return (
       <div style={{ textAlign: 'center', padding: '1rem 0' }}>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
@@ -107,13 +35,11 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
     );
   }
 
-  const formatAddress = (addr) => `${addr.slice(0, 6)}...${addr.slice(-6)}`;
-
   return (
     <div style={{ marginTop: '0.5rem' }}>
       {!pubKey ? (
         <button 
-          onClick={connect} 
+          onClick={connectWallet} 
           disabled={connecting}
           className="btn-primary"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}
@@ -129,7 +55,7 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
                  <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--success)', letterSpacing: '0.05em' }}>MAINNET READY</span>
               </div>
               <button 
-                onClick={disconnect}
+                onClick={disconnectWallet}
                 style={{ background: 'transparent', border: 'none', color: 'var(--accent)', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', padding: '0.2rem 0.5rem', borderRadius: '6px' }}
               >
                 Sign Out
@@ -153,6 +79,7 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
     </div>
   );
 };
+
 
 export default Wallet;
 
