@@ -7,6 +7,7 @@ import {
 
 const Wallet = ({ pubKey, setPubKey, setAlert }) => {
   const [isInstalled, setIsInstalled] = useState(true);
+  const [connecting, setConnecting] = useState(false);
 
   useEffect(() => {
     checkConnection();
@@ -27,73 +28,101 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
         }
       }
     } catch (e) {
-      console.log(e);
+      console.error("Wallet check failed:", e);
     }
   };
 
   const connect = async () => {
+    setConnecting(true);
     try {
       if (!window.freighter) {
         setIsInstalled(false);
+        setConnecting(false);
         return;
       }
-      await setAllowed();
-      const info = await getUserInfo();
-      if (info && info.publicKey) {
-        setPubKey(info.publicKey);
-        setAlert({ type: 'success', message: 'Wallet Authorization Success!' });
+      
+      const allowed = await setAllowed();
+      if (allowed) {
+        const info = await getUserInfo();
+        if (info && info.publicKey) {
+          setPubKey(info.publicKey);
+          setAlert({ type: 'success', message: 'Wallet Connected Successfully!' });
+        }
+      } else {
+        setAlert({ type: 'error', message: 'Access Denied. Please allow Freighter to connect.' });
       }
     } catch (e) {
-      setAlert({ type: 'error', message: 'Authorization Cancelled.' });
+      setAlert({ type: 'error', message: 'Authorization Cancelled or Failed.' });
+    } finally {
+      setConnecting(false);
     }
   };
 
   const disconnect = () => {
     setPubKey('');
-    setAlert({ type: 'success', message: 'Wallet Session Ended.' });
+    setAlert({ type: 'success', message: 'Signed out of session.' });
   };
 
   if (!isInstalled) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <p className="subtitle" style={{marginBottom: '1.5rem'}}>Stellar Wallet Required</p>
-        <a href="https://freighter.app" target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: 'none' }}>
-          Get Freighter
+      <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+          Freighter Wallet not detected.
+        </p>
+        <a 
+          href="https://freighter.app" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="btn-primary" 
+          style={{ textDecoration: 'none', display: 'inline-block', fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}
+        >
+          Download Freighter
         </a>
       </div>
     );
   }
 
+  const formatAddress = (addr) => `${addr.slice(0, 6)}...${addr.slice(-6)}`;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div style={{ marginTop: '0.5rem' }}>
       {!pubKey ? (
-        <button onClick={connect} className="btn-primary">
-          📲 Connect Wallet
+        <button 
+          onClick={connect} 
+          disabled={connecting}
+          className="btn-primary"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}
+        >
+          {connecting ? <span className="loader" style={{ width: '18px', height: '18px' }} /> : '🌐'}
+          {connecting ? 'Connecting...' : 'Connect Wallet'}
         </button>
       ) : (
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.8rem' }}>AUTHORIZED ACCOUNT</span>
-            <button 
-              onClick={disconnect} 
-              style={{ padding: '0.4rem 0.8rem', border: 'none', background: 'rgba(244, 63, 94, 0.1)', color: 'var(--accent)', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.7rem' }}
-            >
-              Sign Out
-            </button>
-          </div>
-          <div style={{ 
-            background: 'white', 
-            padding: '1rem', 
-            borderRadius: '12px', 
-            fontFamily: 'monospace', 
-            fontSize: '0.9rem', 
-            color: 'var(--primary)',
-            border: '1px solid var(--card-border)',
-            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
-            wordBreak: 'break-all'
-          }}>
-            {pubKey}
-          </div>
+        <div className="glass-panel" style={{ background: 'white', padding: '1rem', border: '1px solid #F1F5F9', boxShadow: 'none' }}>
+           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                 <div className="live-indicator" />
+                 <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--success)', letterSpacing: '0.05em' }}>MAINNET READY</span>
+              </div>
+              <button 
+                onClick={disconnect}
+                style={{ background: 'transparent', border: 'none', color: 'var(--accent)', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', padding: '0.2rem 0.5rem', borderRadius: '6px' }}
+              >
+                Sign Out
+              </button>
+           </div>
+           <div style={{ 
+             fontFamily: 'monospace', 
+             fontSize: '1rem', 
+             fontWeight: 700, 
+             color: 'var(--primary)',
+             background: 'var(--primary-light)',
+             padding: '0.75rem',
+             borderRadius: '10px',
+             textAlign: 'center',
+             letterSpacing: '0.05em'
+           }}>
+             {formatAddress(pubKey)}
+           </div>
         </div>
       )}
     </div>
@@ -101,3 +130,4 @@ const Wallet = ({ pubKey, setPubKey, setAlert }) => {
 };
 
 export default Wallet;
+
