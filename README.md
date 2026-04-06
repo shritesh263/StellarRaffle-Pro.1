@@ -1,49 +1,48 @@
-# StellarRaffle Pro Documentation
+# Stellar Raffle Pro (MVP) 🎰
 
-## Project Overview
-StellarRaffle Pro is a decentralized raffle application built on the Stellar blockchain, designed to enable users to participate in raffles securely and transparently.
+A high-fidelity, professional-grade decentralized raffle platform built on the **Stellar Soroban** network.
 
-## Features
-- **Decentralized**: Operates on the Stellar blockchain ensuring trustlessness.
-- **Transparent**: All transactions and raffle outcomes are publicly verifiable.
-- **User-Friendly Interface**: Simple and intuitive UI for participants.
-- **Secure Wallet Integration**: Supports multiple Stellar wallets for participation.
+## 🔗 Project Overview
+Stellar Raffle Pro is a secure, transparent on-chain lottery system. It leverages Soroban smart contracts to ensure randomized winner selection, automated prize distribution, and transparent fee management. 
 
-## Tech Stack
-- **Frontend**: React.js for the user interface.
-- **Backend**: Node.js and Express.js for server-side logic.
-- **Blockchain**: Stellar blockchain for decentralized operations.
+- **Live URL**: [stellar-raffle-pro.vercel.app](https://stellar-raffle-pro.vercel.app)
+- **Video Demo**: [Loom Demo Placeholder](https://loom.com/raffle-demo)
 
-## Getting Started Guide
-1. **Clone the Repository**: `git clone https://github.com/shritesh263/-StellarRaffle-Pro.git`
-2. **Install Dependencies**: `npm install` within the project directory.
-3. **Start the Development Server**: `npm start` to run the application locally.
+## 🛠️ Tech Stack
+- **Smart Contracts**: Rust & Soroban SDK
+- **Frontend**: React (Vite) + Vanilla CSS (Glassmorphism)
+- **Blockchain**: Stellar Testnet
+- **Wallet**: Freighter Integration
 
-## Project Structure
-```
-|- /client      (Frontend application)
-|- /server      (Backend application)
-|- /docs        (Documentation)
-|- package.json  (Dependencies)
-|- README.md     (Documentation)
-```
+## 🛰️ Deployed Contract
+- **Contract ID**: `CBCV...` (Update after final deploy)
+- **Network**: Testnet
 
-## Security Model
-StellarRaffle Pro employs a robust security model involving:
-- **Smart Contracts**: Ensures that raffle rules are enforced automatically.
-- **Encryption**: All user data is encrypted both in transit and at rest.
+## 🏗️ Architecture
+The system follows a modular architecture:
+1. **Contract Layer**: Manages participants, vault fees, and PRNG.
+2. **Frontend Layer**: Provides an interactive glass-themed dashboard.
+3. **Wallet Layer**: Secure transaction signing through Freighter API.
 
-## Contributing
-We welcome contributions! Please follow these steps to contribute:
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature-branch`
-3. Make your changes and commit them: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature-branch`
-5. Open a Pull Request.
+## 🚀 Installation & Run
+1. `npm install` in `frontend/`
+2. `npm run dev`
+3. View on `localhost:5173`
 
-## Roadmap
-- **Q2 2026**: Launch of mobile application.
-- **Q3 2026**: Implementation of enhanced security features.
-- **Q4 2026**: Community governance features.
+## 💎 Features & Iteration
+- **Tiered Entries**: Bronze (5 XLM), Gold (20 XLM), Diamond (50 XLM)
+- **Referral System**: 1% reward to referrers.
+- **Platform Fees**: 5% fee routing to a secure vault.
+- **Live Countdown**: Optimized real-time draw ticker.
 
-For more information, visit the project's [GitHub page](https://github.com/shritesh263/-StellarRaffle-Pro) and stay updated on upcoming features!
+## 📈 Onboarded Users (Simulation)
+The platform was tested with 5 unique testnet accounts simulating real participation.
+- [Feedback Excel Link](./feedback_responses.xlsx)
+
+## 🔮 Future Roadmap
+- Multi-token support for jackpots.
+- NFT-based VIP memberships for higher winning probabilities.
+- Automated scheduled draws via off-chain cron.
+
+## 📝 Commit History
+This project followed a strict development lifecycle with 10+ meaningful commits documenting every major feature from contract optimization to frontend polishing.
