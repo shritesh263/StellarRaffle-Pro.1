@@ -13,14 +13,12 @@ function App() {
   const { 
     publicKey: pubKey, 
     isFreighterInstalled, 
-    isWalletConnected, 
     connecting, 
     error: walletError, 
     connectWallet, 
     disconnectWallet 
   } = useFreighter();
 
-  const { balance, loading: balanceLoading, refreshBalance } = useStellar(pubKey);
   const [alert, setAlert] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('play'); // 'play', 'history', 'referral'
@@ -42,7 +40,6 @@ function App() {
 
   const handleTransactionSuccess = () => {
     setRefreshTrigger(prev => prev + 1);
-    refreshBalance();
   };
 
 
@@ -108,7 +105,6 @@ function App() {
                 
                 {pubKey ? (
                   <BuyTicket 
-                    pubKey={pubKey} 
                     tier={selectedTier}
                     setAlert={setAlert} 
                     onSuccess={handleTransactionSuccess} 
@@ -198,25 +194,11 @@ function App() {
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           <div className="glass-panel stat-card">
              <div className="stat-label">🔐 SECURE ACCOUNT</div>
-             <Wallet 
-               pubKey={pubKey} 
-               setAlert={setAlert} 
-               connectWallet={connectWallet}
-               disconnectWallet={disconnectWallet}
-               connecting={connecting}
-               isFreighterInstalled={isFreighterInstalled}
-             />
+             <Wallet setAlert={setAlert} />
           </div>
           
-          <Balance 
-            pubKey={pubKey} 
-            refreshTrigger={refreshTrigger} 
-            setAlert={setAlert} 
-            newBalance={balance}
-            newLoading={balanceLoading}
-          />
+          <Balance refreshTrigger={refreshTrigger} />
 
-          
           <RaffleInfo refreshTrigger={refreshTrigger} setHistory={setHistory} />
         </aside>
       </div>

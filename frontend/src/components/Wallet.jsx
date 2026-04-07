@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import {
-  isAllowed,
-  setAllowed,
-  getUserInfo,
-} from '@stellar/freighter-api';
+import React from 'react';
+import { useFreighter } from '../hooks/useFreighter';
 
-const Wallet = ({ pubKey, setAlert, connectWallet, disconnectWallet, connecting, isFreighterInstalled }) => {
+const Wallet = ({ setAlert }) => {
+  const { 
+    publicKey: pubKey, 
+    connectWallet, 
+    disconnectWallet, 
+    connecting, 
+    isFreighterInstalled 
+  } = useFreighter();
+
   const formatAddress = (addr) => addr ? `${addr.slice(0, 8)}...${addr.slice(-8)}` : '';
 
   if (!isFreighterInstalled) {
@@ -50,7 +54,7 @@ const Wallet = ({ pubKey, setAlert, connectWallet, disconnectWallet, connecting,
       ) : (
         <div className="glass-panel" style={{ background: 'white', padding: '1rem', border: '1px solid #F1F5F9', boxShadow: 'none' }}>
            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'center', alignItems: 'center', gap: '0.5rem' }}>
                  <div className="live-indicator" />
                  <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--success)', letterSpacing: '0.05em' }}>MAINNET READY</span>
               </div>
@@ -79,7 +83,6 @@ const Wallet = ({ pubKey, setAlert, connectWallet, disconnectWallet, connecting,
     </div>
   );
 };
-
 
 export default Wallet;
 

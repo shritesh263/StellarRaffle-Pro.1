@@ -19,7 +19,8 @@ async function deploy() {
     console.log("Funded.");
 
     let account = await server.getAccount(deployer.publicKey());
-    const wasmPath = path.join(process.cwd(), '..', 'contract', 'target', 'wasm32-unknown-unknown', 'release', 'stellar_raffle_contract.wasm');
+    const wasmPath = path.join(process.cwd(), 'contract', 'target', 'wasm32-unknown-unknown', 'release', 'stellar_raffle_contract.wasm');
+    console.log(`Loading WASM from: ${wasmPath}`);
     const wasm = fs.readFileSync(wasmPath);
 
     // 1. Upload WASM

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { signTransaction } from '@stellar/freighter-api';
 import { TransactionBuilder, Networks, Contract, rpc, nativeToScVal, Address, xdr } from '@stellar/stellar-sdk';
+import { useFreighter } from '../hooks/useFreighter';
 
 const CONTRACT_ID = import.meta.env.VITE_CONTRACT_ID || "CCAWDG6Z66B66B66B66B66B66B66B66B66B66B66B66B66B66B66B66B"; 
 const RPC_URL = import.meta.env.VITE_RPC_URL || "https://soroban-testnet.stellar.org:443";
@@ -8,7 +9,8 @@ const NETWORK_PASSPHRASE = Networks.TESTNET;
 
 const rpcServer = new rpc.Server(RPC_URL);
 
-const BuyTicket = ({ pubKey, tier, setAlert, onSuccess }) => {
+const BuyTicket = ({ tier, setAlert, onSuccess }) => {
+  const { publicKey: pubKey } = useFreighter();
   const [loading, setLoading] = useState(false);
   const [txStatus, setTxStatus] = useState(''); // '', 'signing', 'submitting', 'finalizing'
 

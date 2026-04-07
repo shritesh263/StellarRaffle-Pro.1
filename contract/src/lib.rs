@@ -1,4 +1,5 @@
 #![no_std]
+mod raffle;
 use soroban_sdk::{
     contract, contractimpl, contracttype, symbol_short, token, Address, Env, Symbol, Vec,
 };
