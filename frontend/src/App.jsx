@@ -5,6 +5,9 @@ import RaffleInfo from './components/RaffleInfo';
 import BuyTicket from './components/BuyTicket';
 import TierSelector from './components/TierSelector';
 import WinnerHistory from './components/WinnerHistory';
+import MetricsDashboard from './components/MetricsDashboard';
+import Monitoring from './components/Monitoring';
+import DataIndex from './components/DataIndex';
 
 import { useFreighter } from './hooks/useFreighter';
 import { useStellar } from './hooks/useStellar';
@@ -82,6 +85,24 @@ function App() {
             onClick={() => setActiveTab('referral')}
           >
             🤝 Referrals
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'metrics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('metrics')}
+          >
+            📊 Metrics
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'monitoring' ? 'active' : ''}`}
+            onClick={() => setActiveTab('monitoring')}
+          >
+            ⚙️ Monitor
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'indexing' ? 'active' : ''}`}
+            onClick={() => setActiveTab('indexing')}
+          >
+            🗃️ Index
           </button>
         </div>
       </div>
@@ -189,6 +210,10 @@ function App() {
               )}
             </div>
           )}
+
+          {activeTab === 'metrics' && <MetricsDashboard />}
+          {activeTab === 'monitoring' && <Monitoring />}
+          {activeTab === 'indexing' && <DataIndex />}
         </main>
 
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
