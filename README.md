@@ -1,72 +1,82 @@
-# 🎰 StellarRaffle Pro  
-### High-Fidelity On-Chain Lottery on Stellar
+# 🎰 StellarRaffle Pro — The High-Fidelity On-Chain Lottery
 
-[![Blockchain](https://img.shields.io/badge/Blockchain-Stellar-black?style=for-the-badge)](https://stellar.org)  
-[![Smart Contracts](https://img.shields.io/badge/Smart_Contract-Soroban-7B62EE?style=for-the-badge)](https://soroban.stellar.org)  
-[![Frontend](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge)](https://reactjs.org)
+[![Stellar](https://img.shields.io/badge/Blockchain-Stellar-000000?style=for-the-badge&logo=stellar&logoColor=white)](https://stellar.org)
+[![Soroban](https://img.shields.io/badge/Smart_Contract-Soroban-7B62EE?style=for-the-badge&logo=rust&logoColor=white)](https://soroban.stellar.org)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org)
 
----
+**StellarRaffle Pro** is a professional-grade, decentralized raffle platform built on the **Stellar Soroban** network. It combines a stunning glassmorphism design with a robust, reactive on-chain backend to deliver a secure and transparent gambling experience.
 
-## 📌 Overview
-
-**StellarRaffle Pro** is a decentralized raffle platform built on the Stellar Soroban network.  
-It provides a secure, transparent, and fully on-chain lottery experience where all entries, draws, and results are verifiable.
+![Dashboard Overview](./screenshots/dashboard_full.png)
+![Dashboard Detail](./screenshots/dashboard_detail.png)
 
 ---
 
-## 🚀 Features
+## 🚀 Key Expansion Features (On-Chain)
 
-- 📊 **Live Vault Tracker** – Real-time XLM pool tracking  
-- ⏲️ **Smart Countdown** – Contract-based draw timer  
-- 🎲 **Odds Calculator** – Instant win probability  
-- 💸 **Multi-Ticket Bundling** – 1–50 tickets with 10% discount  
-- 🏠 **User Dashboard** – Track tickets, spending, and wins  
-- 📡 **Draw History** – Last 5 rounds with explorer links  
-- 🔥 **Streak Bonus System** – Rewards for consecutive participation  
-- 🏆 **Leaderboard** – Top users by wins and entries  
+I have implemented **8 advanced features** to make this platform a production-ready Web3 application:
 
----
-
-## 🛠️ Tech Stack
-
-### Blockchain
-- Stellar Network  
-- Soroban Smart Contracts  
-- Rust  
-
-### Frontend
-- React (Vite)  
-- Tailwind CSS  
-
-### Wallet
-- Freighter Wallet  
-
-### Backend Logic
-- Soroban RPC  
-- Transaction Simulation  
-- On-chain State Management  
+- **📊 Live Vault Tracker**: Real-time XLM pool monitoring with an animated 10k target fill bar.
+- **⏲️ Smart Countdown**: Synchronized draw timer using contract state with "Draw in Progress" polling.
+- **🎲 Odds Calculator**: Instant probability analysis for the connected wallet (User Entries / Total Entries).
+- **💸 Multi-Ticket Bundling**: Interactive 1–50 quantity slider with an automated **10% discount** for bulk buys (10+ tickets).
+- **🏠 Personal Dashboard**: Own ticket IDs table and running totals (spent vs. rounds vs. wins).
+- **📡 Verifiable Draw History**: The last 5 completed rounds linked directly to **Stellar Expert**.
+- **🔥 Streak Bonus System**: On-chain tracking of consecutive entries with rewards after 5 rounds.
+- **🏆 Global Leaderboard**: Top 10 rankings by "Biggest Win" and "Most Tickets" with user highlighting.
 
 ---
 
-## 📂 Project Structure
+## 🛠️ Technology Stack
+
+- **Smart Contracts**: Rust & Soroban SDK (`contract/src/raffle.rs`)
+- **Frontend Layer**: React (Vite) + Tailwind CSS (New Pro Components) + Vanilla CSS (Original Dashboard)
+- **Wallet Architecture**: [Freighter Wallet](https://freighter.app) integration for secure, multisig-ready signing.
+- **RPC Interactions**: Direct Soroban RPC calls with automated `simulateTransaction` flows.
+- **Data Export**: Internal CSV generator for personal ticket records.
+
+---
+
+## 📂 Project Organization (Clean Structure)
+
+```text
 /contract
-├── src/raffle.rs
-└── src/lib.rs
-
+  ├── src/raffle.rs       <-- Optimized On-Chain Logic
+  └── src/lib.rs          <-- Contract Entry & Modules
 /frontend
-├── src/components/
-├── src/hooks/
-└── src/context/
-
+  ├── src/components/     <-- Modular UI (8 Pro Features)
+  ├── src/hooks/          <-- Shared useContract Hook
+  └── src/context/        <-- Global Wallet State Provider
+/README_FEATURES.md       <-- Detailed Module Documentation
+```
 
 ---
 
-## ⚙️ Getting Started
+## 📈 Documentation & Resources
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/your-username/StellarRaffle-Pro.git
-cd StellarRaffle-Pro/frontend
+- **Project Data**: [📊 Download Feedback Excel Link](./feedback_responses.xlsx)  
+  *(Note: Link will be active once the feedback file is uploaded to the root directory).*
+- **Verifiable Links**: All transactions and winners are verifiable via [Stellar Expert Testnet](https://stellar.expert/explorer/testnet).
 
+---
 
-npm install
+## 🚀 Setting Up Locally
+
+1. **Clone & Install**:
+   ```bash
+   cd frontend && npm install
+   ```
+2. **Environment Configuration**:
+   Create a `.env` file in `/frontend` with your `VITE_CONTRACT_ID` and `VITE_RPC_URL`.
+3. **Execute**:
+   ```bash
+   npm run dev
+   ```
+4. **Deploy Contract**:
+   Use `stellar contract deploy` with the compiled `.wasm` file from the `/contract` build.
+
+---
+
+## 🔮 Future Vision
+- **Cross-Chain Interoperability**: Bridging XLM raffles to other Stellar assets.
+- **Community DAO**: Decentralized governance for raffle fee percentage adjustments.
+- **Mobile Native**: Integration with the LOBSTR wallet and mobile-optimized views.#
