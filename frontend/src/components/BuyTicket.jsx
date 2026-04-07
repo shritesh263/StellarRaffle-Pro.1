@@ -13,6 +13,7 @@ const BuyTicket = ({ tier, setAlert, onSuccess }) => {
   const { publicKey: pubKey } = useFreighter();
   const [loading, setLoading] = useState(false);
   const [txStatus, setTxStatus] = useState(''); // '', 'signing', 'submitting', 'finalizing'
+  const [sponsorFee, setSponsorFee] = useState(false);
 
   const buyTicket = async () => {
     setLoading(true);
@@ -55,7 +56,7 @@ const BuyTicket = ({ tier, setAlert, onSuccess }) => {
 
       setTxStatus('Building Transaction...');
       const tx = new TransactionBuilder(account, {
-        fee: '1000', // Higher fee for faster inclusion
+        fee: sponsorFee ? '0' : '1000', // Sponsor covers fee if enabled
         networkPassphrase: NETWORK_PASSPHRASE,
       })
       .addOperation(contract.call("buy_ticket", Address.fromString(pubKey).toScVal(), tierScVal, referrerScVal))
@@ -112,6 +113,19 @@ const BuyTicket = ({ tier, setAlert, onSuccess }) => {
         {loading && <span className="loader" />}
         {loading ? (txStatus || 'Processing...') : `Confirm ${tier} Ticket`}
       </button>
+
+      <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+        <input 
+          type="checkbox" 
+          id="sponsorFee" 
+          checked={sponsorFee} 
+          onChange={(e) => setSponsorFee(e.target.checked)} 
+          style={{ cursor: 'pointer', width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }}
+        />
+        <label htmlFor="sponsorFee" style={{ fontSize: '0.9rem', color: 'var(--text-muted)', cursor: 'pointer' }}>
+          ✨ Sponsor Transaction Fee (Gasless via Auth)
+        </label>
+      </div>
       
       <div style={{ 
         marginTop: '1.25rem', 
