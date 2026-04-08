@@ -68,7 +68,7 @@ I have implemented **8 advanced features** to make this platform a production-re
 
 ## 📈 Documentation & Resources
 
-* **Project Data**: [📊 Download Feedback Excel Link](./feedback_responses.xlsx) *(Note: Link will be active once the feedback file is uploaded to the root directory).*
+* **Project Data**: [📊 Download Feedback Excel Link]((./feedback_responses.xlsx)) *(Note: Link will be active once the feedback file is uploaded to the root directory).*
 * **Verifiable Links**: All transactions and winners are verifiable via [Stellar Expert Testnet](https://stellar.expert/explorer/testnet).
 
 ---
