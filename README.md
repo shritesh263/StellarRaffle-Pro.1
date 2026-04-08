@@ -1,21 +1,16 @@
 # Stellar Raffle
 
-## Overview
-Stellar Raffle is a platform for hosting raffles that leverages the power of blockchain technology. This project allows users to participate in fair and transparent raffles.
-
 ## Features
-- **Transparent Process**: Raffles are conducted on the blockchain ensuring no tampering.
-- **User-Friendly Interface**: Designed to provide an intuitive experience for all users.
-- **Secure Transactions**: All transactions are secured using cryptography.
+- User authentication
+- Ticket purchasing
+- Raffle drawing
 
-## How to Participate
-1. **Create an Account**: Sign up using a valid email address.
-2. **Choose a Raffle**: Browse the available raffles and select one to enter.
-3. **Purchase Tickets**: Select the number of tickets you wish to buy and complete your transaction.
-4. **Await the Draw**: The winners will be announced on the specified date.
+## Tech Stack
+- Frontend: React
+- Backend: Node.js
+- Database: MongoDB
 
-## Getting Started
-To run Stellar Raffle locally:
+## Setup Instructions
 1. Clone the repository:
    ```bash
    git clone https://github.com/shritesh263/StellarRaffle-Pro.1.git
@@ -28,17 +23,7 @@ To run Stellar Raffle locally:
    ```bash
    npm install
    ```
-4. Start the application:
+4. Run the application:
    ```bash
    npm start
    ```
-
-## Contributing
-Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-For further information or questions, please contact the project maintainers.
